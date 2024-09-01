@@ -1,6 +1,6 @@
 {
   "name": "wwebjs-devsakae",
-  "version": "1.25.1",
+  "version": "1.25.2",
   "description": "Library for interacting with the WhatsApp Web API with some changing by devsakae",
   "main": "./index.js",
   "typings": "./index.d.ts",
@@ -28,7 +28,7 @@
   "bugs": {
     "url": "https://github.com/pedroslopez/whatsapp-web.js/issues"
   },
-  "homepage": "https://wwebjs.dev/",
+  "homepage": "http://devsakae.vercel.app/tigrebot",
   "dependencies": {
     "@pedroslopez/moduleraid": "^5.0.2",
     "fluent-ffmpeg": "2.1.2",
