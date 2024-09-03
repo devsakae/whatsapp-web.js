@@ -32,7 +32,7 @@ class MessageMedia {
          * @type {?string}
          */
         this.filename = filename;
-        
+
         /**
          * Document file size in bytes. Value can be null
          * @type {?number}
@@ -46,8 +46,8 @@ class MessageMedia {
      * @returns {MessageMedia}
      */
     static fromFilePath(filePath) {
-        const b64data = fs.readFileSync(filePath, {encoding: 'base64'});
-        const mimetype = mime.getType(filePath); 
+        const b64data = fs.readFileSync(filePath, { encoding: 'base64' });
+        const mimetype = mime.getType(filePath);
         const filename = path.basename(filePath);
 
         return new MessageMedia(mimetype, b64data, filename);
@@ -71,7 +71,7 @@ class MessageMedia {
         if (!mimetype && !options.unsafeMime)
             throw new Error('Unable to determine MIME type using URL. Set unsafeMime to true to download it anyway.');
 
-        async function fetchData (url, options) {
+        async function fetchData(url, options) {
             const reqOptions = Object.assign({ headers: { accept: 'image/* video/* text/* audio/*' } }, options);
             const response = await fetch(url, reqOptions);
             const mime = response.headers.get('Content-Type');
@@ -90,7 +90,7 @@ class MessageMedia {
                 });
                 data = btoa(data);
             }
-            
+
             return { data, mime, name, size };
         }
 
@@ -100,11 +100,36 @@ class MessageMedia {
 
         const filename = options.filename ||
             (res.name ? res.name[0] : (pUrl.pathname.split('/').pop() || 'file'));
-        
+
         if (!mimetype)
             mimetype = res.mime;
 
         return new MessageMedia(mimetype, res.data, filename, res.size || null);
+    }
+    /** 
+     * Securely saves the data to a file 
+     * @paranm {string} filePath the path to where you want to save the file (no extensions)
+     * @example <caption>Example usage of this function</caption>
+     * const media = await msg.downloadMedia();
+     * media.toFilePath('/home/purpshell/Documents/message') // the code adds the extension for you (if you enter a directory we will use the filename property (if it's null then we'll throw an error))
+     * @returns {null} no need to return anything
+     */
+    async toFilePath(filePath) {
+        const ext = mime.getExtension(this.mimetype);
+        if (fs.existsSync(filePath)) {
+            const stat = await fs.promises.stat(filePath);
+            if (stat.isDirectory()) {
+                if (this.filename) {
+                    filePath += this.filename;
+                } else {
+                    throw Error('You passed in a directory but the filename is empty');
+                }
+            }
+        }
+        if (!filePath.includes('.')) {
+            filePath += `.${ext}`;
+        }
+        await fs.promises.writeFile(filePath, this.data, 'base64');
     }
 }
 

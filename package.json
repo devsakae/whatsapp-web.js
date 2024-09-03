@@ -1,6 +1,6 @@
 {
   "name": "wwebjs-devsakae",
-  "version": "1.25.2",
+  "version": "1.25.3",
   "description": "Library for interacting with the WhatsApp Web API with some changing by devsakae",
   "main": "./index.js",
   "typings": "./index.d.ts",
